@@ -5,7 +5,12 @@
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="registration_being_done">User not found. Will be registered.</string>
+    <string name="login_activity_remember">Remember me</string><string name="registration_being_done">User not found. Will be registered.</string>
     <string name="title_activity_trivia">TriviaActivity</string>
-
+    <string name="welcome_activity_play">PLAY</string>
+    <string name="welcome_activity_want_to_play">Press play to start a new game!</string>
+    <string name="trivia_fragment_submit">submit</string>
+    <string name="trivia_fragment_title">Which movie is different from the others??</string>
+    
+    
 </resources>

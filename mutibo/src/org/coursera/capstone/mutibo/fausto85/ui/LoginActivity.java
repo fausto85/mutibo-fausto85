@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -45,7 +46,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 	 * Keep track of the login task to ensure we can cancel it if requested.
 	 */
 	private UserLoginTask mAuthTask = null;
-
+	private static final String TAG = "LoginActity";
+	
 	// UI references.
 	private AutoCompleteTextView mEmailView;
 	private EditText mPasswordView;
@@ -113,6 +115,8 @@ private void populateAutoComplete() {
 	 * errors are presented and no actual login attempt is made.
 	 */
 	public void attemptLogin() {
+		Log.d(TAG, "Attempting login");
+
 		if (mAuthTask != null) {
 			return;
 		}
@@ -298,10 +302,12 @@ private void populateAutoComplete() {
 			account.setUser(mEmail);
 			account.setPassword(mPassword);
 			if(mAuthManager.isUserRegistered(account) == false){
+				Log.d(TAG, "User not registered");
 				// TODO: The registration should be done in another activity or by getting permission etc.
 				//showRegistrationNotification();
 				success = mAuthManager.registerUser(account);
 			} else {
+				Log.d(TAG, "User was already registered");
 				success = true;
 			}
 				
@@ -315,7 +321,8 @@ private void populateAutoComplete() {
 
 			if (success) {
 				//finish();
-				Intent profileActivityIntent = new Intent(getApplicationContext(), ProfileActivity.class);
+				Log.d(TAG, "Exiting Activity, going to Welcome Activity");
+				Intent profileActivityIntent = new Intent(getApplicationContext(), WelcomeActivity.class);
 				startActivity(profileActivityIntent);
 			} else {
 				mPasswordView

@@ -2,7 +2,11 @@ package org.coursera.capstone.mutibo.fausto85;
 
 import java.util.ArrayList;
 
+import android.util.Log;
+
 public class AuthenticationManager {
+
+	private static final String TAG = "AuthenticationManager";
 
 	//TODO: Only one account should be ever present
 	private ArrayList<AuthenticationInfo> mAccounts;
@@ -31,7 +35,10 @@ public class AuthenticationManager {
 		Boolean registered = false;
 		//TODO: this should send the information to a web service
 		mAccounts.add(account);
+		Log.i(TAG, "Registering Account");
 		registered = true;
+		Log.i(TAG, "Account Registered");
+		//Log.w(TAG, "Account Registration Error");
 		return registered;
 	}
 	
@@ -40,6 +47,12 @@ public class AuthenticationManager {
 			instance = new AuthenticationManager();
 		}
 		return instance;
+	}
+	
+	public AuthenticationInfo getCurrentAccount(){
+		if(mAccounts != null) return mAccounts.get(0);
+		else return null;
+			//TODO: Handle this like an exception
 	}
 	
 	protected AuthenticationManager(){

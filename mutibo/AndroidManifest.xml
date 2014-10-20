@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.ProfileActivity"
+            android:name="org.coursera.capstone.mutibo.fausto85.ui.WelcomeActivity"
             android:label="@string/title_activity_profile" >
         </activity>
         <activity
