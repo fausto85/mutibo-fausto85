@@ -1,0 +1,12 @@
+{
+  "Movie_1":"American Pie",
+  "Movie_2":"Mean Girls",
+  "Movie_3":"Titanic",
+  "Movie_4":"The Breakfast Club",
+  "Odd_Movie":3,
+  "Explanation":"By Genre: Titanic is not a High school movie",
+  "Rates":0,
+  "Level":0,
+  "Odd_Movie_String":"Titanic",
+  "Type":"Genre"
+}

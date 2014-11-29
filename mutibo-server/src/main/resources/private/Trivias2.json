@@ -1,0 +1,26 @@
+[
+  {
+    "movie1":"American Pie",
+    "movie2":"Mean Girls",
+    "movie3":"Titanic",
+    "movie4":"The Breakfast Club",
+    "oddMovie":3,
+    "explanation":"By Genre: Titanic is not a High school movie",
+    "rates":"0",
+    "level":"0",
+    "oddMovieString":"Titanic",
+    "type":"Genre"
+  },
+  {
+    "movie1":"The Hunger Games",
+    "movie2":"Breakfast at Tiffany's",
+    "movie3":"Slumdog Millionaire",
+    "movie4":"Django Unchained",
+    "oddMovie":2,
+    "explanation":"By Age: While the others movies are quite recent, Breakfast at Tiffany's is a very old movie",
+    "rates":"0",
+    "level":"0",
+    "oddMovieString":"Breakfast at Tiffany's",
+    "type":"Age"
+  }
+]
