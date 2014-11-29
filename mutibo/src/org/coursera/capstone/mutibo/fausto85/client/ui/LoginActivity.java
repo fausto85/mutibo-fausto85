@@ -1,4 +1,4 @@
-package org.coursera.capstone.mutibo.fausto85.ui;
+package org.coursera.capstone.mutibo.fausto85.client.ui;
 
 import android.accounts.Account;
 import android.animation.Animator;
@@ -6,7 +6,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -16,6 +15,7 @@ import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
@@ -33,9 +33,11 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.coursera.capstone.mutibo.fausto85.AuthenticationInfo;
-import org.coursera.capstone.mutibo.fausto85.AuthenticationManager;
 import org.coursera.capstone.mutibo.fausto85.R;
+import org.coursera.capstone.mutibo.fausto85.client.AuthenticationInfo;
+import org.coursera.capstone.mutibo.fausto85.client.AuthenticationManager;
+import org.coursera.capstone.mutibo.fausto85.client.connection.ServerConnectionManager;
+
 
 /**
  * A login screen that offers login via email/password.
@@ -47,7 +49,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 	 */
 	private UserLoginTask mAuthTask = null;
 	private static final String TAG = "LoginActity";
-	
 	// UI references.
 	private AutoCompleteTextView mEmailView;
 	private EditText mPasswordView;
@@ -58,7 +59,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build(); 
+		StrictMode.setThreadPolicy(policy);		
+		
 		setContentView(R.layout.activity_login);
+		
 		mAuthManager = AuthenticationManager.getInstance();
 
 		// Set up the login form.
@@ -94,18 +100,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 	@Override
 	protected void onResume()	{
 		super.onResume();
-		Boolean t;
-		t = false;
 	}
 	
 	@Override
 	protected void onRestart()	{
 		super.onRestart();
-		Boolean t;
-		t = false;
 	}
 	
-private void populateAutoComplete() {
+	private void populateAutoComplete() {
 		getLoaderManager().initLoader(0, null, this);
 	}
 
@@ -165,7 +167,8 @@ private void populateAutoComplete() {
 
 	private boolean isEmailValid(String email) {
 		// TODO: Replace this with your own logic
-		return email.contains("@");
+		//return email.contains("@");
+		return true;
 	}
 
 	private boolean isPasswordValid(String password) {
@@ -173,45 +176,31 @@ private void populateAutoComplete() {
 		return password.length() > 4;
 	}
 
-	/**
-	 * Shows the progress UI and hides the login form.
-	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	public void showProgress(final boolean show) {
-		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-		// for very easy animations. If available, use these APIs to fade-in
-		// the progress spinner.
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			int shortAnimTime = getResources().getInteger(
-					android.R.integer.config_shortAnimTime);
+		int shortAnimTime = getResources().getInteger(
+				android.R.integer.config_shortAnimTime);
 
-			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-			mLoginFormView.animate().setDuration(shortAnimTime)
-					.alpha(show ? 0 : 1)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mLoginFormView.setVisibility(show ? View.GONE
-									: View.VISIBLE);
-						}
-					});
+		mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+		mLoginFormView.animate().setDuration(shortAnimTime)
+		.alpha(show ? 0 : 1)
+		.setListener(new AnimatorListenerAdapter() {
+			@Override
+			public void onAnimationEnd(Animator animation) {
+				mLoginFormView.setVisibility(show ? View.GONE
+						: View.VISIBLE);
+			}
+		});
 
-			mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-			mProgressView.animate().setDuration(shortAnimTime)
-					.alpha(show ? 1 : 0)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mProgressView.setVisibility(show ? View.VISIBLE
-									: View.GONE);
-						}
-					});
-		} else {
-			// The ViewPropertyAnimator APIs are not available, so simply show
-			// and hide the relevant UI components.
-			mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-		}
+		mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+		mProgressView.animate().setDuration(shortAnimTime)
+		.alpha(show ? 1 : 0)
+		.setListener(new AnimatorListenerAdapter() {
+			@Override
+			public void onAnimationEnd(Animator animation) {
+				mProgressView.setVisibility(show ? View.VISIBLE
+						: View.GONE);
+			}
+		});
 	}
 
 	@Override
@@ -280,36 +269,36 @@ private void populateAutoComplete() {
 
 		private final String mEmail;
 		private final String mPassword;
+		private final ServerConnectionManager mServerConnectionManager;
 
 		UserLoginTask(String email, String password) {
 			mEmail = email;
 			mPassword = password;
+			mServerConnectionManager = ServerConnectionManager.getInstance();
 		}
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			Boolean success = false;
 			
-			// TODO: attempt authentication against a network service.
 			try {
-				// Simulate network access.
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				return false;
+				success = mServerConnectionManager.login(mEmail, mPassword);
+			} catch (Exception e1) {
+				e1.printStackTrace();
 			}
 			
-			AuthenticationInfo account  = new AuthenticationInfo();
-			account.setUser(mEmail);
-			account.setPassword(mPassword);
-			if(mAuthManager.isUserRegistered(account) == false){
-				Log.d(TAG, "User not registered");
-				// TODO: The registration should be done in another activity or by getting permission etc.
-				//showRegistrationNotification();
-				success = mAuthManager.registerUser(account);
-			} else {
-				Log.d(TAG, "User was already registered");
-				success = true;
-			}
+//			AuthenticationInfo account  = new AuthenticationInfo();
+//			account.setUser(mEmail);
+//			account.setPassword(mPassword);
+//			if(mAuthManager.isUserRegistered(account) == false){
+//				Log.d(TAG, "User not registered");
+//				// TODO: The registration should be done in another activity or by getting permission etc.
+//				//showRegistrationNotification();
+//				success = mAuthManager.registerUser(account);
+//			} else {
+//				Log.d(TAG, "User was already registered");
+//				success = true;
+//			}
 				
 			return success;
 		}
@@ -320,14 +309,14 @@ private void populateAutoComplete() {
 			showProgress(false);
 
 			if (success) {
-				//finish();
 				Log.d(TAG, "Exiting Activity, going to Welcome Activity");
 				Intent profileActivityIntent = new Intent(getApplicationContext(), WelcomeActivity.class);
 				startActivity(profileActivityIntent);
 			} else {
+				mEmailView.setError(getString(R.string.error_invalid_email));
+				mEmailView.requestFocus();
 				mPasswordView
 						.setError(getString(R.string.error_incorrect_password));
-				mPasswordView.requestFocus();
 			}
 		}
 

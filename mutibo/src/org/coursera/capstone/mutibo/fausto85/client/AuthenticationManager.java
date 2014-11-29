@@ -1,4 +1,4 @@
-package org.coursera.capstone.mutibo.fausto85;
+package org.coursera.capstone.mutibo.fausto85.client;
 
 import java.util.ArrayList;
 

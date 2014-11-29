@@ -1,8 +1,8 @@
-package org.coursera.capstone.mutibo.fausto85.ui;
+package org.coursera.capstone.mutibo.fausto85.client.ui;
 
-import org.coursera.capstone.mutibo.fausto85.AuthenticationInfo;
-import org.coursera.capstone.mutibo.fausto85.AuthenticationManager;
 import org.coursera.capstone.mutibo.fausto85.R;
+import org.coursera.capstone.mutibo.fausto85.client.AuthenticationInfo;
+import org.coursera.capstone.mutibo.fausto85.client.AuthenticationManager;
 
 import android.app.Activity;
 import android.content.Intent;

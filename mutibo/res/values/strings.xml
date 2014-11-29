@@ -11,6 +11,9 @@
     <string name="welcome_activity_want_to_play">Press play to start a new game!</string>
     <string name="trivia_fragment_submit">submit</string>
     <string name="trivia_fragment_title">Which movie is different from the others??</string>
+    <string name="image_button_for_like_description">image button for like</string>
+    <string name="rate_this_trivia">Rate this trivia</string>
+    <string name="your_points">Your points:</string>
     
     
 </resources>
