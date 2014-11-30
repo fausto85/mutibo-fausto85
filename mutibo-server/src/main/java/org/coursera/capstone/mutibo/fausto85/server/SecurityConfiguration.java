@@ -129,16 +129,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void registerAuthentication(
 			final AuthenticationManagerBuilder auth) throws Exception {
 		
-		// This example creates a simple in-memory UserDetailService that
-		// is provided by Spring
 		auth.inMemoryAuthentication()
-				.withUser("coursera")
-				.password("changeit")
-				.authorities("admin","user")
-				.and()
-				.withUser("student")
-				.password("changeit")
-				.authorities("user");
+				.withUser(UserTestDatabase.usernameAdmin)
+				.password(UserTestDatabase.passwordAdmin)
+				.authorities(UserTestDatabase.adminRole,UserTestDatabase.userRole);
+		
+		for(int i = 0; i<UserTestDatabase.MAX_USERS; i++){
+			auth.inMemoryAuthentication()
+			.withUser(UserTestDatabase.users.get(i).getUsername())
+			.password(UserTestDatabase.passwords.get(i))
+			.authorities(UserTestDatabase.userRole);
+		}
 	}
 
 }

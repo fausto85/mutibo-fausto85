@@ -814,17 +814,5 @@
     "level":"0",
     "oddMovieString":"The Fifth Element",
     "type":"Location"
-  },
-  {
-    "movie1":"A Fistful of Dollars",
-    "movie2":"For a Few Dollars More",
-    "movie3":"The Good, the Bad and the Ugly",
-    "movie4":"Once Upon a Time in America",
-    "oddMovie":4,
-    "explanation":"By Movie Trilogy: Once Upon a Time in America is the only one not part of the Dollars Trilogy",
-    "rates":"",
-    "level":"",
-    "oddMovieString":"",
-    "type":""
   }
 ]

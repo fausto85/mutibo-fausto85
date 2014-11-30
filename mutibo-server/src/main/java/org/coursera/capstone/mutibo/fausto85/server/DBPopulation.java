@@ -3,9 +3,13 @@ package org.coursera.capstone.mutibo.fausto85.server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
 import javax.annotation.PostConstruct;
+
 import org.coursera.capstone.mutibo.fausto85.server.repo.Trivia;
 import org.coursera.capstone.mutibo.fausto85.server.repo.TriviaRepository;
+import org.coursera.capstone.mutibo.fausto85.server.repo.User;
+import org.coursera.capstone.mutibo.fausto85.server.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -18,14 +22,16 @@ import com.google.gson.Gson;
 public class DBPopulation {
 
 	//private final static String triviaResource = "private/Trivias.json";
-	//private final static String triviaResource = "private/Trivias1.json";
 	private final static String triviaResource = "private/Trivias2.json";
 	
 	@Autowired
 	private TriviaRepository triviaRepository;
 	
+	@Autowired
+	private UserRepository userRepository;
+
 	@PostConstruct
-	public void populateDB() throws IOException{
+	public void populateTriviaDB() throws IOException{
 		String triviasJson = "";
 		Trivia[] trivias = {};
 		try {
@@ -49,11 +55,25 @@ public class DBPopulation {
 		}
 		 
 		try{
+			long i = 0;
 			 for(Trivia t: trivias){
+				 t.setId(i);
 				 triviaRepository.save(t);
+				 i++;
 			 }
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
+
+	@PostConstruct
+	public void populateUserDB() throws IOException{
+		long i = 0;
+		for(User u : UserTestDatabase.users){
+			u.setId(i);
+			userRepository.save(u);
+			i++;
+		}
+	}
+
 }

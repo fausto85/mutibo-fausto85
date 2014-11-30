@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http11.Http11NioProtocol;
+import org.coursera.capstone.mutibo.fausto85.server.repo.Trivia;
 import org.coursera.capstone.mutibo.fausto85.server.repo.TriviaRepository;
 import org.coursera.capstone.mutibo.fausto85.server.json.ResourcesMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -47,6 +49,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class Application extends RepositoryRestMvcConfiguration {
 
 	public static void main(String[] args) {
+		UserTestDatabase.init();
+		
 		SpringApplication.run(Application.class, args);
 	}
 
@@ -62,6 +66,13 @@ public class Application extends RepositoryRestMvcConfiguration {
 		return new ResourcesMapper();
 	}
 	
+    @Override
+
+    protected void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
+
+        config.exposeIdsFor(Trivia.class);
+
+    }
 	
     // This version uses the Tomcat web container and configures it to
 	// support HTTPS. The code below performs the configuration of Tomcat

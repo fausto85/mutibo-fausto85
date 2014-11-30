@@ -6,12 +6,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import com.google.common.base.Objects;
+import com.google.gson.annotations.Expose;
 
 @Entity
 public class Trivia {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Expose
 	private long id;
 
 	private String movie1;
@@ -30,7 +31,7 @@ public class Trivia {
 	}
 	
 	public Trivia(String m1, String m2, String m3, String m4, long odd, String exp, 
-					long rates, long level, String oddStr, String type){
+					long rates, long level, String oddStr, String type, int id){
 		this.movie1 = m1;
 		this.movie2 = m2;
 		this.movie3 = m3;
@@ -41,6 +42,7 @@ public class Trivia {
 		this.level = level;
 		this.oddMovieString = oddStr;
 		this.type = type;
+		this.id = id;
 	}
 	
 	public long getId() {

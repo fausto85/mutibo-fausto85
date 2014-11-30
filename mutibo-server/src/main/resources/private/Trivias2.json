@@ -1,5 +1,6 @@
 [
   {
+    "id":0,
     "movie1":"American Pie",
     "movie2":"Mean Girls",
     "movie3":"Titanic",
@@ -12,6 +13,7 @@
     "type":"Genre"
   },
   {
+    "id":1,
     "movie1":"The Hunger Games",
     "movie2":"Breakfast at Tiffany's",
     "movie3":"Slumdog Millionaire",
@@ -22,5 +24,41 @@
     "level":"0",
     "oddMovieString":"Breakfast at Tiffany's",
     "type":"Age"
+  },
+  {
+    "movie1":"Unbreakable",
+    "movie2":"The Sixth Sense",
+    "movie3":"The Village",
+    "movie4":"12 Monkeys",
+    "oddMovie":4,
+    "explanation":"By Director: 12 Monkeys is not a movie by M. Night Shyamalan",
+    "rates":"0",
+    "level":"0",
+    "oddMovieString":"12 Monkeys",
+    "type":"Director"
+  },
+  {
+    "movie1":"Monsters Inc.",
+    "movie2":"Toy Story",
+    "movie3":"Shrek",
+    "movie4":"Finding Nemo",
+    "oddMovie":3,
+    "explanation":"By Studio: Shrek is not a movie by Pixar",
+    "rates":"0",
+    "level":"0",
+    "oddMovieString":"Shrek",
+    "type":"Studio"
+  },
+  {
+    "movie1":"Zombieland",
+    "movie2":"Saw",
+    "movie3":"Dawn of the Dead",
+    "movie4":"28 Days Later",
+    "oddMovie":2,
+    "explanation":"By Subgenre: Saw is not a zombie movie",
+    "rates":"0",
+    "level":"0",
+    "oddMovieString":"Saw",
+    "type":"Subgenre"
   }
 ]

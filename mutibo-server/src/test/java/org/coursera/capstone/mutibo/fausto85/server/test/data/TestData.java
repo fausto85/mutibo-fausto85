@@ -25,7 +25,7 @@ public class TestData {
 	 * @return
 	 */
 	public static Trivia randomTrivia() {
-		return new Trivia("A","B","C","D",2, "exp", 0,0,"odd string", "type");
+		return new Trivia("A","B","C","D",2, "exp", 0,0,"odd string", "type", -1);
 	}
 	
 	/**
