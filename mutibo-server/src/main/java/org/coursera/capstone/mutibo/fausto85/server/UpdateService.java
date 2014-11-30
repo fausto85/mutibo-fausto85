@@ -36,32 +36,36 @@ public class UpdateService {
 			long newPoints = userFromRepo.getPoints() + userFromRequest.getPoints();
 			userFromRepo.setPoints(newPoints);
 			mUserRepository.save(userFromRepo);
+			System.out.println("User with name: " + userFromRepo.getUsername() + " Points: " + userFromRepo.getPoints());
 			return true;
 		}
 		return false;
 	}
 
 	@RequestMapping(value=MutiboInterface.TRIVIA_UPDATE_SVC_PATH, method=RequestMethod.POST)
-	public @ResponseBody boolean updateUser(@RequestBody Collection<TriviaUpdate> triviaUpdates){
+	public @ResponseBody boolean updateTriviaRating(@RequestBody Collection<TriviaUpdate> triviaUpdates){
 		if(triviaUpdates !=null){
 			for(TriviaUpdate update : triviaUpdates){
 				Trivia t = mTriviaRepository.findOne(update.getId());
-				if(update.getRating() == Rating.LIKE){
-					//long rating = t.getRates() + 1;
-					//t.setRates(rating);
-				}else if(update.getRating() == Rating.DISLIKE){
-					long rating = t.getRates() - 1;
-					t.setRates(rating);
-				}else if(update.getRating() == Rating.SKIPPED){
-					//Do nothing
+				if(t !=null){
+					if(update.getRating() == Rating.LIKE){
+						//System.out.println("Trivia with Id: " + t.getId() + "LIKED");
+						//long rating = t.getRates() + 1;
+						//t.setRates(rating);
+					}else if(update.getRating() == Rating.DISLIKE){
+						System.out.println("Trivia with Id: " + t.getId() + " DISLIKED");
+						long rating = t.getRates() - 1;
+						t.setRates(rating);
+					}else if(update.getRating() == Rating.SKIPPED){
+						//Do nothing
+					}
+					if(needsToBeDeleted(t.getId()) == false){
+						mTriviaRepository.save(t);
+					}else{
+						mTriviaRepository.delete(t.getId());
+						System.out.println("Deleted trivia with Id: " + t.getId());
+					}
 				}
-				if(needsToBeDeleted(t.getId()) == false){
-					mTriviaRepository.save(t);
-				}else{
-					mTriviaRepository.delete(t.getId());
-					System.out.println("Deleted trivia with Id: " + t.getId());
-				}
-				
 			}
 			return true;
 		}else{

@@ -280,7 +280,7 @@ public class MutiboClientApiTest {
 			List <TriviaUpdate> updates = new ArrayList<TriviaUpdate>();
 			
 			//update trivia 0
-			updates.add(new TriviaUpdate(triviaBeforeUpdate.getId(), Rating.DISLIKE));
+			updates.add(new TriviaUpdate(triviaBeforeUpdate.getId(), Rating.DISLIKE, 0));
 
 			//update trivia 4
 			iterator.next();
@@ -288,7 +288,7 @@ public class MutiboClientApiTest {
 			iterator.next();
 			triviaBeforeUpdate = iterator.next();
 			
-			updates.add(new TriviaUpdate(triviaBeforeUpdate.getId(), Rating.DISLIKE));
+			updates.add(new TriviaUpdate(triviaBeforeUpdate.getId(), Rating.DISLIKE, 0));
 			
 			mutiboService.updateTrivia(updates);
 			
@@ -335,7 +335,7 @@ public class MutiboClientApiTest {
 			List <TriviaUpdate> updates = new ArrayList<TriviaUpdate>();
 			
 			//update trivia 1
-			updates.add(new TriviaUpdate(triviaBeforeUpdate.getId(), Rating.DISLIKE));
+			updates.add(new TriviaUpdate(triviaBeforeUpdate.getId(), Rating.DISLIKE, 0));
 
 			//dislike 3 times (should be enough because it's the >10 % of the users (20 -> 2)
 			mutiboService.updateTrivia(updates);

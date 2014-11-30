@@ -55,7 +55,7 @@ public class DBPopulation {
 		}
 		 
 		try{
-			long i = 0;
+			long i = 1;
 			 for(Trivia t: trivias){
 				 t.setId(i);
 				 triviaRepository.save(t);
@@ -68,7 +68,7 @@ public class DBPopulation {
 
 	@PostConstruct
 	public void populateUserDB() throws IOException{
-		long i = 0;
+		long i = 1;
 		for(User u : UserTestDatabase.users){
 			u.setId(i);
 			userRepository.save(u);

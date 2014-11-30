@@ -34,7 +34,7 @@ public interface MutiboInterface {
 		// The path to update a Trivia
 		public static final String TRIVIA_UPDATE_SVC_PATH = "/updatetrivia";
 
-		// The path to search videos by title
+		// The path to search users by username
 		public static final String USER_SEARCH_PATH = USER_SVC_PATH + "/search/findByUsername";
 
 		//parameter to search by username

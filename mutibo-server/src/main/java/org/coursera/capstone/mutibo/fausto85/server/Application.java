@@ -6,6 +6,7 @@ import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http11.Http11NioProtocol;
 import org.coursera.capstone.mutibo.fausto85.server.repo.Trivia;
 import org.coursera.capstone.mutibo.fausto85.server.repo.TriviaRepository;
+import org.coursera.capstone.mutibo.fausto85.server.repo.UserRepository;
 import org.coursera.capstone.mutibo.fausto85.server.json.ResourcesMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -29,7 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 //our classes with @Autowired
 @EnableAutoConfiguration
 //Tell Spring to automatically create a JPA implementation of our
-//VideoRepository
+//TriviaRepository
 @EnableJpaRepositories(basePackageClasses = TriviaRepository.class)
 //Tell Spring to turn on WebMVC (e.g., it should enable the DispatcherServlet
 //so that requests can be routed to our Controllers)

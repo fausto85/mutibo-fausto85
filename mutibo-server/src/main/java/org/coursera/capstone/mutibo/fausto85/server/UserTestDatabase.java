@@ -23,7 +23,7 @@ public class UserTestDatabase {
 		public static void init(){
 			users = new ArrayList<User>();
 			passwords = new ArrayList<String>();
-			for(int i = 0; i<MAX_USERS; i++){
+			for(int i = 1; i<=MAX_USERS; i++){
 				users.add(new User(usernameBase + i, 0));
 				passwords.add(passwordBase + i);
 			}

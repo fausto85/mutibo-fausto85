@@ -11,19 +11,21 @@ public class TriviaUpdate {
 	public TriviaUpdate() {
 		super();
 	}
-	public TriviaUpdate(Long id, Rating rating) {
+	public TriviaUpdate(long id, Rating rating, long userId) {
 		super();
 		this.id = id;
 		this.rating = rating;
+		this.userId = userId;
 	}
 
-	private Long id;
+	private long id;
 	private TriviaUpdate.Rating rating;
+	private long userId;
 
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	public TriviaUpdate.Rating getRating() {
@@ -31,6 +33,12 @@ public class TriviaUpdate {
 	}
 	public void setRating(TriviaUpdate.Rating rating) {
 		this.rating = rating;
+	}
+	public long getUserId() {
+		return userId;
+	}
+	public void setUserId(long userId) {
+		this.userId = userId;
 	}
 	
 }

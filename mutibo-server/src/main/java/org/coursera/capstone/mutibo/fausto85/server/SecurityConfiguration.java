@@ -101,12 +101,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.permitAll();
 		
 		// Require clients to login and have an account with the "user" role
-		// in order to access /video
-		// http.authorizeRequests().antMatchers("/video").hasRole("user");
+		// in order to access /trivia
+		// http.authorizeRequests().antMatchers("/trivia").hasRole("user");
 		
 		// Require clients to login and have an account with the "user" role
-		// in order to send a POST request to /video
-		// http.authorizeRequests().antMatchers(HttpMethod.POST, "/video").hasRole("user");
+		// in order to send a POST request to /trivia
+		// http.authorizeRequests().antMatchers(HttpMethod.POST, "/trivia").hasRole("user");
 		
 		// We force clients to authenticate before accessing ANY URLs 
 		// other than the login and lougout that we have configured above.

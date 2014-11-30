@@ -13,9 +13,7 @@ public interface UserRepository extends CrudRepository<User, Long>{
 
 	// Find all users with a matching username (e.g., User.username)
 	public Collection<User> findByUsername(
-			// The @Param annotation tells Spring Data Rest which HTTP request
-			// parameter it should use to fill in the "title" variable used to
-			// search for Videos
+
 			@Param(MutiboInterface.USER_PARAMETER) String username);
 
 }

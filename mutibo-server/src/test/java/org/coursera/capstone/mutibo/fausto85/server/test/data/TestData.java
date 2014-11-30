@@ -5,11 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This is a utility class to aid in the construction of
- * Video objects with random names, urls, and durations.
- * The class also provides a facility to convert objects
- * into JSON using Jackson, which is the format that the
- * VideoSvc controller is going to expect data in for
- * integration testing.
+ * Trivia objects with random names, urls, and durations.
  * 
  * @author jules
  *
@@ -19,7 +15,7 @@ public class TestData {
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 	
 	/**
-	 * Construct and return a Video object with a
+	 * Construct and return a Trivia object with a
 	 * rnadom name, url, and duration.
 	 * 
 	 * @return
