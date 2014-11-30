@@ -1,0 +1,62 @@
+[
+  {
+    "movie1":"The Shining",
+    "movie2":"Pet Sematary",
+    "movie3":"It",
+    "movie4":"Poltergeist",
+    "oddMovie":4,
+    "explanation":"By Writer: Poltergeist is not based on a Stephen King book",
+    "rates":"0",
+    "level":"1",
+    "oddMovieString":"Poltergeist",
+    "type":"Writer"
+  },
+  {
+    "movie1":"The Matrix",
+    "movie2":"X-Men: Days of Future Past",
+    "movie3":"Forrest Gump",
+    "movie4":"Lucy",
+    "oddMovie":3,
+    "explanation":"By Genre: Forrest Gump is not a science Fiction movie",
+    "rates":"0",
+    "level":"1",
+    "oddMovieString":"Forrest Gump",
+    "type":"Genre"
+  },
+  {
+    "movie1":"Taken",
+    "movie2":"Run",
+    "movie3":"Leon: The Professional",
+    "movie4":"The Transporter",
+    "oddMovie":3,
+    "explanation":"By Director: Leon: The Professional is not a movie by Luc Besson",
+    "rates":"0",
+    "level":"1",
+    "oddMovieString":"Leon: The Professional",
+    "type":"Director"
+  },
+  {
+    "movie1":"Mad Max",
+    "movie2":"The Year of Living Dangerously",
+    "movie3":"Braveheart",
+    "movie4":"Revolutionary Road",
+    "oddMovie":4,
+    "explanation":"By Actor: Mel Gibson does not appear in Revolutionary Road",
+    "rates":"0",
+    "level":"1",
+    "oddMovieString":"Revolutionary Road",
+    "type":"Actor"
+  },
+  {
+    "movie1":"Avatar",
+    "movie2":"Spider-man",
+    "movie3":"Superman",
+    "movie4":"My Name is Khan",
+    "oddMovie":4,
+    "explanation":"By Origin: My Name is Khan is the only Bollywood movie",
+    "rates":"0",
+    "level":"1",
+    "oddMovieString":"My Name is Khan",
+    "type":"Origin"
+  }
+]

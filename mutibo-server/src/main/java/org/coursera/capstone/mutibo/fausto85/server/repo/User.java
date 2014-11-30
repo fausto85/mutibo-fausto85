@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import com.google.common.base.Objects;
+import com.google.gson.annotations.Expose;
 
 @Entity
 public class User {
@@ -31,6 +32,11 @@ public class User {
 
 	private String username;
 	private long points;
+
+	@Expose(serialize = false)
+	private String gcmRegistrationId;
+	@Expose(serialize = false)
+	private long levelPlayed;
 	
 	public String getUsername() {
 		return username;
@@ -70,6 +76,22 @@ public class User {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getGcmRegistrationId() {
+		return gcmRegistrationId;
+	}
+
+	public void setGcmRegistrationId(String gcmRegistrationId) {
+		this.gcmRegistrationId = gcmRegistrationId;
+	}
+
+	public long getLevelPlayed() {
+		return levelPlayed;
+	}
+
+	public void setLevelPlayed(long levelPlayed) {
+		this.levelPlayed = levelPlayed;
 	}
 	
 }

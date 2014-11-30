@@ -16,6 +16,7 @@ import org.coursera.capstone.mutibo.fausto85.server.repo.User;
 import org.coursera.capstone.mutibo.fausto85.server.repo.TriviaUpdate.Rating;
 import org.coursera.capstone.mutibo.fausto85.server.test.data.TestData;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import retrofit.ErrorHandler;
@@ -262,7 +263,7 @@ public class MutiboClientApiTest {
 	}
 
 	@Test
-	@Deprecated
+	@Ignore
 	public void testBadRatingForTrivia() throws Exception {
 		ErrorRecorder error = new ErrorRecorder();
 

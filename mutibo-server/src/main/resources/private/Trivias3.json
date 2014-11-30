@@ -1,0 +1,62 @@
+[
+  {
+    "movie1":"The Matador",
+    "movie2":"GoldenEye",
+    "movie3":"Moonraker",
+    "movie4":"Dr. No",
+    "oddMovie":1,
+    "explanation":"By Character: The Matador is not a James Bond movie",
+    "rates":"0",
+    "level":"2",
+    "oddMovieString":"The Matador",
+    "type":"Character"
+  },
+  {
+    "movie1":"The Pledge",
+    "movie2":"The Wolf of Wall Street",
+    "movie3":"Mars Attacks!",
+    "movie4":"One Flew Over the Cuckoo's Nest",
+    "oddMovie":2,
+    "explanation":"By Actor: The Wolf of Wall Street is the only one without Jack Nicholson ",
+    "rates":"0",
+    "level":"2",
+    "oddMovieString":"The Wolf of Wall Street",
+    "type":"Actor"
+  },
+  {
+    "movie1":"JFK",
+    "movie2":"Sleepers",
+    "movie3":"Goodfellas",
+    "movie4":"A Few Good Men",
+    "oddMovie":3,
+    "explanation":"By Actor: Kevin Bacon does not appear in Goodfellas.",
+    "rates":"0",
+    "level":"2",
+    "oddMovieString":"Goodfellas",
+    "type":"Actor"
+  },
+  {
+    "movie1":"Ghosts of Mississippi",
+    "movie2":"JFK",
+    "movie3":"This is Spinal Tap",
+    "movie4":"Stand By Me",
+    "oddMovie":2,
+    "explanation":"By Director: Rob Reiner did not direct JFK.",
+    "rates":"0",
+    "level":"2",
+    "oddMovieString":"JFK",
+    "type":"Director"
+  },
+  {
+    "movie1":"Tom Jones",
+    "movie2":"Rocky",
+    "movie3":"Citizen Kane",
+    "movie4":"The Greatest Show on Earth",
+    "oddMovie":3,
+    "explanation":"By Oscar Win: Citizen Kane did not win Best Picture",
+    "rates":"0",
+    "level":"2",
+    "oddMovieString":"Citizen Kane",
+    "type":"Oscar Win"
+  }
+]

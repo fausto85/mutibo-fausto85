@@ -22,7 +22,7 @@ import com.google.gson.Gson;
 public class DBPopulation {
 
 	//private final static String triviaResource = "private/Trivias.json";
-	private final static String triviaResource = "private/Trivias2.json";
+	private final static String triviaResource = "private/Trivias0.json";
 	
 	@Autowired
 	private TriviaRepository triviaRepository;

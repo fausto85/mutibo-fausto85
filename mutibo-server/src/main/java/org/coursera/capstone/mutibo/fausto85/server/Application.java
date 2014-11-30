@@ -6,7 +6,6 @@ import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http11.Http11NioProtocol;
 import org.coursera.capstone.mutibo.fausto85.server.repo.Trivia;
 import org.coursera.capstone.mutibo.fausto85.server.repo.TriviaRepository;
-import org.coursera.capstone.mutibo.fausto85.server.repo.UserRepository;
 import org.coursera.capstone.mutibo.fausto85.server.json.ResourcesMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
