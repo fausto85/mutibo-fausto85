@@ -5,7 +5,7 @@ public class Answer {
 	private int points;
 	private int triviaId;
 	public static final int[] POINTS_PER_ANSWER = {5, 3, 1, 0};
-	public static final int MAX_TRIES = 4;
+	public static final int MAX_TRIES = 3;
 
 	public Answer(int points, int triviaId) {
 		this.points = points;
@@ -24,4 +24,5 @@ public class Answer {
 	public void setTriviaId(int triviaId) {
 		this.triviaId = triviaId;
 	}
+
 }

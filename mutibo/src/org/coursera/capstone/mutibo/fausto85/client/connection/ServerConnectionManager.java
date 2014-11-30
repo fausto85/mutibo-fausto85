@@ -2,8 +2,9 @@ package org.coursera.capstone.mutibo.fausto85.client.connection;
 
 import java.util.Collection;
 
-import org.coursera.capstone.mutibo.fausto85.client.question.Answer;
 import org.coursera.capstone.mutibo.fausto85.client.question.Trivia;
+import org.coursera.capstone.mutibo.fausto85.client.user.User;
+import org.coursera.capstone.mutibo.fausto85.client.user.UserManager;
 
 import android.util.Log;
 
@@ -80,15 +81,37 @@ public class ServerConnectionManager {
 		return trivias;
 	}
 
-	public Boolean syncAnswers(Collection<Answer> mAnswers) {
+	public Boolean updatePointsToUser(User userToUpdate) {
 		Boolean success = false;
 		try{
-			mMutiboInterface.syncAnswers(mAnswers);
+			mMutiboInterface.updateUser(userToUpdate);
 			success = true;
 		}catch(Exception e){
 			e.printStackTrace();
 			Log.w(TAG, e.toString());
 		}
 		return success;
+	}
+
+	public Boolean updateTriviasRatings(Collection<TriviaUpdate> triviaUpdates) {
+		Boolean success = false;
+		try{
+			mMutiboInterface.updateTrivia(triviaUpdates);
+			success = true;
+		}catch(Exception e){
+			e.printStackTrace();
+			Log.w(TAG, e.toString());
+		}
+		return success;
+	}
+	
+	public User findCurrentUser(){
+		Collection<User> users =  mMutiboInterface.findByUsername(UserManager.getInstance().getUser().getUsername());
+		if(users!=null && users.iterator()!=null){
+			return users.iterator().next();
+		}else{
+			Log.e(TAG, "user not found. Did we log in??");
+			return null;
+		}
 	}
 }

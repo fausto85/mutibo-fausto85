@@ -1,9 +1,7 @@
 package org.coursera.capstone.mutibo.fausto85.client.ui;
 
-import android.accounts.Account;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -13,7 +11,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.ContactsContract;
@@ -34,9 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.coursera.capstone.mutibo.fausto85.R;
-import org.coursera.capstone.mutibo.fausto85.client.AuthenticationInfo;
-import org.coursera.capstone.mutibo.fausto85.client.AuthenticationManager;
 import org.coursera.capstone.mutibo.fausto85.client.connection.ServerConnectionManager;
+import org.coursera.capstone.mutibo.fausto85.client.user.UserManager;
 
 
 /**
@@ -54,7 +50,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 	private EditText mPasswordView;
 	private View mProgressView;
 	private View mLoginFormView;
-	private AuthenticationManager mAuthManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +60,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 		
 		setContentView(R.layout.activity_login);
 		
-		mAuthManager = AuthenticationManager.getInstance();
-
 		// Set up the login form.
 		mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 		//populateAutoComplete();
@@ -107,10 +100,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 		super.onRestart();
 	}
 	
-	private void populateAutoComplete() {
-		getLoaderManager().initLoader(0, null, this);
-	}
-
 	/**
 	 * Attempts to sign in or register the account specified by the login form.
 	 * If there are form errors (invalid email, missing fields, etc.), the
@@ -167,7 +156,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
 	private boolean isEmailValid(String email) {
 		// TODO: Replace this with your own logic
-		//return email.contains("@");
 		return true;
 	}
 
@@ -287,19 +275,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 				e1.printStackTrace();
 			}
 			
-//			AuthenticationInfo account  = new AuthenticationInfo();
-//			account.setUser(mEmail);
-//			account.setPassword(mPassword);
-//			if(mAuthManager.isUserRegistered(account) == false){
-//				Log.d(TAG, "User not registered");
-//				// TODO: The registration should be done in another activity or by getting permission etc.
-//				//showRegistrationNotification();
-//				success = mAuthManager.registerUser(account);
-//			} else {
-//				Log.d(TAG, "User was already registered");
-//				success = true;
-//			}
-				
 			return success;
 		}
 
@@ -311,6 +286,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 			if (success) {
 				Log.d(TAG, "Exiting Activity, going to Welcome Activity");
 				Intent profileActivityIntent = new Intent(getApplicationContext(), WelcomeActivity.class);
+				UserManager.init(mEmail);
 				startActivity(profileActivityIntent);
 			} else {
 				mEmailView.setError(getString(R.string.error_invalid_email));

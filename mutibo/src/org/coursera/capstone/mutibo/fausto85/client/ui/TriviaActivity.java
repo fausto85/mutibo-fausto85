@@ -1,6 +1,7 @@
 package org.coursera.capstone.mutibo.fausto85.client.ui;
 
 import org.coursera.capstone.mutibo.fausto85.R;
+import org.coursera.capstone.mutibo.fausto85.client.connection.TriviaUpdate;
 import org.coursera.capstone.mutibo.fausto85.client.question.*;
 
 import android.animation.Animator;
@@ -10,14 +11,20 @@ import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class TriviaActivity extends Activity {
 
@@ -26,6 +33,7 @@ public class TriviaActivity extends Activity {
 
 	private QuestionManager mQuestionManager;
 	private TriviaLoadingTask mTriviaLoadingTask = null;
+	private AnswerManager mAnswerManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +41,8 @@ public class TriviaActivity extends Activity {
 
 		setContentView(R.layout.activity_trivia);
 		mQuestionManager = QuestionManager.getInstance();
+		mAnswerManager = AnswerManager.getInstance();
+		mAnswerManager.initPlaySession();
 		mTriviaLoadingTask = new TriviaLoadingTask();
 		mTriviaLoadingTask.execute((Void) null);
 	}
@@ -62,6 +72,7 @@ public class TriviaActivity extends Activity {
 	}
 
 	public void showProgress(final boolean show) {
+		//TODO: Show animation
 //		int shortAnimTime = getResources().getInteger(
 //				android.R.integer.config_shortAnimTime);
 //
@@ -89,7 +100,8 @@ public class TriviaActivity extends Activity {
 	}
 	
 	private void showError() {
-		// TODO Auto-generated method stub
+		Toast t = Toast.makeText(getApplicationContext(), getString(R.string.trivia_activity_server_error), Toast.LENGTH_LONG);
+		t.show();
 		finish();
 	}
 
@@ -128,7 +140,7 @@ public class TriviaActivity extends Activity {
 			showProgress(false);
 		}
 	}
-	
+
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
@@ -136,13 +148,16 @@ public class TriviaActivity extends Activity {
 
 		private RadioGroup mRadioGroup;
 		private QuestionManager mQuestionManager;
+		private AnswerManager mAnswerManager;
 		private Trivia mCurrentTrivia;
 		private Answer mAnswer;
 		private int mTries;
 		private View mRootView; 
+		private UserSyncTask mUserSyncTask;
 
 		public TriviaQuestionFragment() {
 			mQuestionManager = QuestionManager.getInstance();
+			mAnswerManager = AnswerManager.getInstance();
 		}
 
 		@Override
@@ -167,12 +182,12 @@ public class TriviaActivity extends Activity {
 					if(isCorrectOption && mTries < Answer.MAX_TRIES){
 						mAnswer.setPoints(Answer.POINTS_PER_ANSWER[mTries]);
 						getFragmentManager().beginTransaction().replace(
-								R.id.container, new TriviaQuestionFragment()).commit();
+								R.id.container, new TriviaAnswerFragment(mCurrentTrivia, mAnswer)).commit();
 						Log.d(TAG, "show next trivia");
 					}else if(mTries == Answer.MAX_TRIES){
 						mAnswer.setPoints(0);
 						getFragmentManager().beginTransaction().replace(
-								R.id.container, new TriviaQuestionFragment()).commit();
+								R.id.container, new TriviaAnswerFragment(mCurrentTrivia, mAnswer)).commit();
 						Log.d(TAG, "show next trivia");
 					}else{
 						showWrongAnswer();
@@ -189,7 +204,10 @@ public class TriviaActivity extends Activity {
 				mAnswer = new Answer(0, (int)mCurrentTrivia.getId());
 				mTries = 0;
 			}else{
-				gameSessionFinished();
+				mUserSyncTask = new UserSyncTask();
+				mUserSyncTask.execute((Void) null);
+
+				//gameSessionFinished();
 			}
 
 			return mRootView;
@@ -216,9 +234,153 @@ public class TriviaActivity extends Activity {
 		}
 
 		private void showWrongAnswer() {
-			// TODO Auto-generated method stub
-			
+			Toast t = Toast.makeText(getActivity().getApplicationContext(), getString(R.string.trivia_fragment_incorrect_answer), Toast.LENGTH_SHORT);
+			t.show();
 		}
+		
+		public class UserSyncTask extends AsyncTask<Void, Void, Boolean> {
+
+			UserSyncTask() {
+			}
+
+			@Override
+			protected Boolean doInBackground(Void... params) {
+				Boolean b1 = mAnswerManager.syncAnswers();
+				Boolean b2 = mAnswerManager.syncRatings();
+				return (b1 && b2);
+			}
+
+			@Override
+			protected void onPreExecute() {
+				super.onPreExecute();
+				showProgress(true);
+			}
+
+			@Override
+			protected void onPostExecute(final Boolean success) {
+				mUserSyncTask = null;
+				showProgress(false);
+
+				if (success) {
+					gameSessionFinished();
+				} else {
+					showError();
+				}
+			}
+
+			@Override
+			protected void onCancelled() {
+				mUserSyncTask = null;
+				showProgress(false);
+			}
+
+			public void showProgress(final boolean show) {
+				//TODO: Show progress
+			}
+			public void showError() {
+				Toast t = Toast.makeText(getActivity().getApplicationContext(), getString(R.string.trivia_activity_server_error), Toast.LENGTH_LONG);
+				t.show();
+				//finish();
+			}
+		}
+		
 	}
+
 	
+	public static class TriviaAnswerFragment extends Fragment{
+		private View mRootView; 
+		private Trivia mCurrentTrivia;
+		private Answer mAnswer;
+		private AnswerManager mAnswerManager;
+		private TextView mPointsTextView;
+		private TextView mExplanationTextView;
+		private ImageButton mLikeButton;
+		private ImageButton mDislikeButton;
+	    
+		public TriviaAnswerFragment(Trivia trivia, Answer answer){
+			mAnswerManager = AnswerManager.getInstance();
+			mCurrentTrivia = trivia;
+			mAnswer = answer;
+		}
+		
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			mRootView = inflater.inflate(R.layout.fragment_trivia_answer,
+					container, false);
+			mPointsTextView = (TextView)mRootView.findViewById(R.id.textViewPointsObtained);
+			mExplanationTextView = (TextView)mRootView.findViewById(R.id.textViewExplanation);
+			mLikeButton = (ImageButton)mRootView.findViewById(R.id.ImageButtonLike);
+			mDislikeButton = (ImageButton)mRootView.findViewById(R.id.ImageButtonDisLike);
+			
+			mPointsTextView.setText(String.valueOf(mAnswer.getPoints()));
+			mExplanationTextView.setText(mCurrentTrivia.getExplanation());
+			
+			mLikeButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					//mAnswerManager.saveTriviaUpdate(mCurrentTrivia.getId(), TriviaUpdate.Rating.LIKE);
+					saveAnswerAndShowNextTrivia();
+				}
+			});
+			
+			mDislikeButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					mAnswerManager.saveTriviaUpdate(mCurrentTrivia.getId(), TriviaUpdate.Rating.DISLIKE);
+					saveAnswerAndShowNextTrivia();
+				}
+			});
+
+			final GestureDetector gesture = new GestureDetector(getActivity(),
+		            new GestureDetector.SimpleOnGestureListener() {
+
+				@Override
+				public boolean onDown(MotionEvent e) {
+					return true;
+				}
+
+				@Override
+				public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+						float velocityY) {
+
+					final int SWIPE_MIN_DISTANCE = 120;
+					final int SWIPE_MAX_OFF_PATH = 250;
+					final int SWIPE_THRESHOLD_VELOCITY = 200;
+					try {
+						if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
+							return false;
+						if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
+								&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+							Log.i(TAG, "Right to Left");
+							saveAnswerAndShowNextTrivia();
+						} else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
+								&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+							Log.i(TAG, "Left to Right");
+						}
+					} catch (Exception e) {
+						// nothing
+					}
+					return super.onFling(e1, e2, velocityX, velocityY);
+				}
+			});
+
+			mRootView.setOnTouchListener(new View.OnTouchListener() {
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					return gesture.onTouchEvent(event);
+				}
+			});
+
+			return mRootView;
+		}
+		
+		private void saveAnswerAndShowNextTrivia() {
+			mAnswerManager.saveAnswer(mAnswer);
+			getFragmentManager().beginTransaction().replace(
+					R.id.container, new TriviaQuestionFragment()).commit();
+		}
+		
+		
+	}
 }

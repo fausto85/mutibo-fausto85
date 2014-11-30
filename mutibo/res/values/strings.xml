@@ -8,11 +8,15 @@
     <string name="login_activity_remember">Remember me</string><string name="registration_being_done">User not found. Will be registered.</string>
     <string name="title_activity_trivia">TriviaActivity</string>
     <string name="welcome_activity_play">PLAY</string>
-    <string name="welcome_activity_want_to_play">Press play to start a new game!</string>
+    <string name="welcome_activity_want_to_play">Hi </string>
+    <string name="welcome_activity_current_score">Current score: </string>
+    <string name="welcome_activity_current_score_not_found">not found</string>
     <string name="trivia_fragment_submit">submit</string>
     <string name="trivia_fragment_title">Which movie is different from the others??</string>
     <string name="image_button_for_like_description">image button for like</string>
-    <string name="rate_this_trivia">Rate this trivia</string>
+    <string name="rate_this_trivia">Rate this trivia or Swipe Left to skip Rating</string>
+    <string name="trivia_fragment_incorrect_answer">Incorrect Answer Try again</string>
+    <string name="trivia_activity_server_error">Connection Error</string>
     <string name="your_points">Your points:</string>
     
     
