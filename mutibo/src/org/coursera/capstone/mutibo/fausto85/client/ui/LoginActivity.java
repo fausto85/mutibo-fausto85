@@ -4,9 +4,13 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -27,12 +31,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.coursera.capstone.mutibo.fausto85.R;
 import org.coursera.capstone.mutibo.fausto85.client.connection.ServerConnectionManager;
 import org.coursera.capstone.mutibo.fausto85.client.user.UserManager;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
+import retrofit.RetrofitError;
 
 
 /**
@@ -50,16 +62,30 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 	private EditText mPasswordView;
 	private View mProgressView;
 	private View mLoginFormView;
+    public static final String PROPERTY_REG_ID = "registration_id";
+    private static final String PROPERTY_APP_VERSION = "appVersion";
 
+	String SENDER_ID = "189207446464";
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+
+    GoogleCloudMessaging gcm;
+    AtomicInteger msgId = new AtomicInteger();
+    Context context;
+
+    String regid;
+    
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build(); 
 		StrictMode.setThreadPolicy(policy);		
+
+        setContentView(R.layout.activity_login);
 		
-		setContentView(R.layout.activity_login);
-		
+        context = getApplicationContext();
+
 		// Set up the login form.
 		mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 		//populateAutoComplete();
@@ -88,11 +114,27 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
 		mLoginFormView = findViewById(R.id.login_form);
 		mProgressView = findViewById(R.id.login_progress);
+
+		// Check device for Play Services APK. If check succeeds, proceed with GCM registration.
+        if (checkPlayServices()) {
+            gcm = GoogleCloudMessaging.getInstance(this);
+            
+            //Let's register always so a proper notification to the host is done
+            //regid = getRegistrationId(context);
+            regid = "";
+
+            if (regid.isEmpty()) {
+                registerInBackground();
+            }
+        } else {
+            Log.e(TAG, "No valid Google Play Services APK found.");
+        }
 	}
 
 	@Override
 	protected void onResume()	{
 		super.onResume();
+        checkPlayServices();
 	}
 	
 	@Override
@@ -100,6 +142,22 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 		super.onRestart();
 	}
 	
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+				Toast t = Toast.makeText(getApplicationContext(), 
+						"Push Notifications won't work", Toast.LENGTH_LONG);
+				t.show();
+            }
+            return false;
+        }
+        return true;
+    }
 	/**
 	 * Attempts to sign in or register the account specified by the login form.
 	 * If there are form errors (invalid email, missing fields, etc.), the
@@ -244,11 +302,81 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 		mEmailView.setAdapter(adapter);
 	}
 
-	private void showRegistrationNotification() {
-		Toast t = new Toast(getApplicationContext());
-		t.setText(R.string.registration_being_done);
-		t.show();
-	}
+    private void storeRegistrationId(Context context, String regId) {
+        final SharedPreferences prefs = getGcmPreferences(context);
+        int appVersion = getAppVersion(context);
+        Log.i(TAG, "Saving regId on app version " + appVersion);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(PROPERTY_REG_ID, regId);
+        editor.putInt(PROPERTY_APP_VERSION, appVersion);
+        editor.commit();
+    }
+
+    private String getRegistrationId(Context context) {
+        final SharedPreferences prefs = getGcmPreferences(context);
+        String registrationId = prefs.getString(PROPERTY_REG_ID, "");
+        if (registrationId.isEmpty()) {
+            Log.i(TAG, "Registration not found.");
+            return "";
+        }
+        // Check if app was updated; if so, it must clear the registration ID
+        // since the existing regID is not guaranteed to work with the new
+        // app version.
+        int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
+        int currentVersion = getAppVersion(context);
+        if (registeredVersion != currentVersion) {
+            Log.i(TAG, "App version changed.");
+            return "";
+        }
+        return registrationId;
+    }
+    
+    private static int getAppVersion(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (NameNotFoundException e) {
+            // should never happen
+            throw new RuntimeException("Could not get package name: " + e);
+        }
+    }
+
+    private SharedPreferences getGcmPreferences(Context context) {
+        return getSharedPreferences(LoginActivity.class.getSimpleName(),
+                Context.MODE_PRIVATE);
+    }
+
+    private void registerInBackground() {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                String msg = "";
+                try {
+                    if (gcm == null) {
+                        gcm = GoogleCloudMessaging.getInstance(context);
+                    }
+                    regid = gcm.register(SENDER_ID);
+
+                    // Persist the regID - no need to register again.
+                    storeRegistrationId(context, regid);
+                } catch (IOException ex) {
+                    msg = "Error :" + ex.getMessage();
+    				Toast t = Toast.makeText(getApplicationContext(), 
+    						msg, Toast.LENGTH_LONG);
+    				t.show();
+                }
+                return msg;
+            }
+
+        }.execute(null, null, null);
+    }
+    
+    private void sendRegistrationIdToBackend(String username) {
+		ServerConnectionManager serverConnectionManager = ServerConnectionManager.getInstance();
+		serverConnectionManager.sendGCMRegistrationId(username, regid);
+      }
+
 	/**
 	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
@@ -271,6 +399,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 			
 			try {
 				success = mServerConnectionManager.login(mEmail, mPassword);
+                sendRegistrationIdToBackend(mEmail);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -289,10 +418,21 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 				UserManager.init(mEmail);
 				startActivity(profileActivityIntent);
 			} else {
-				mEmailView.setError(getString(R.string.error_invalid_email));
-				mEmailView.requestFocus();
-				mPasswordView
-						.setError(getString(R.string.error_incorrect_password));
+				
+				if(mServerConnectionManager.getErrorKind() == RetrofitError.Kind.NETWORK){
+					
+				}else{
+					mEmailView.setError(getString(R.string.error_invalid_email));
+					mEmailView.requestFocus();
+					mPasswordView
+							.setError(getString(R.string.error_incorrect_password));
+				}
+				Toast t = Toast.makeText(getApplicationContext(), 
+						getString(R.string.error_retrofit) + " " +
+						mServerConnectionManager.getErrorKind().toString(), 
+						Toast.LENGTH_LONG);
+				t.show();
+				
 			}
 		}
 
@@ -302,4 +442,5 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 			showProgress(false);
 		}
 	}
+
 }

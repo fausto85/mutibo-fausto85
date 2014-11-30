@@ -10,6 +10,7 @@ import android.util.Log;
 
 import retrofit.RestAdapter;
 import retrofit.RestAdapter.LogLevel;
+import retrofit.RetrofitError;
 import retrofit.client.ApacheClient;
 
 public class ServerConnectionManager {
@@ -20,6 +21,7 @@ public class ServerConnectionManager {
 
 	private RestAdapter mRestAdapter;
 	private MutiboInterface mMutiboInterface; 
+	private RetrofitError.Kind errorKind;
 	private static final String mIP = "https://10.0.3.2:8443";
 	
 	public static ServerConnectionManager getInstance(){
@@ -50,6 +52,9 @@ public class ServerConnectionManager {
 		try{
 			mMutiboInterface.login(email, password);
 			success = true;
+		}catch(RetrofitError e){
+			errorKind = e.getKind();
+			e.printStackTrace();
 		}catch(Exception e){
 			e.printStackTrace();
 			Log.w(TAG, e.toString());
@@ -63,6 +68,9 @@ public class ServerConnectionManager {
 		try{
 			mMutiboInterface.logout();
 			success = true;
+		}catch(RetrofitError e){
+			errorKind = e.getKind();
+			e.printStackTrace();
 		}catch(Exception e){
 			e.printStackTrace();
 			Log.w(TAG, e.toString());
@@ -73,7 +81,11 @@ public class ServerConnectionManager {
 	public Collection<Trivia> getTrivias(){
 		Collection<Trivia> trivias = null;
 		try{
-			trivias = mMutiboInterface.getTriviaList();
+			//trivias = mMutiboInterface.getTriviaList();
+			trivias = mMutiboInterface.getTriviasForUserList(UserManager.getInstance().getUser());
+		}catch(RetrofitError e){
+			errorKind = e.getKind();
+			e.printStackTrace();
 		}catch(Exception e){
 			e.printStackTrace();
 			Log.w(TAG, e.toString());
@@ -86,6 +98,9 @@ public class ServerConnectionManager {
 		try{
 			mMutiboInterface.updateUser(userToUpdate);
 			success = true;
+		}catch(RetrofitError e){
+			errorKind = e.getKind();
+			e.printStackTrace();
 		}catch(Exception e){
 			e.printStackTrace();
 			Log.w(TAG, e.toString());
@@ -98,6 +113,9 @@ public class ServerConnectionManager {
 		try{
 			mMutiboInterface.updateTrivia(triviaUpdates);
 			success = true;
+		}catch(RetrofitError e){
+			errorKind = e.getKind();
+			e.printStackTrace();
 		}catch(Exception e){
 			e.printStackTrace();
 			Log.w(TAG, e.toString());
@@ -106,12 +124,44 @@ public class ServerConnectionManager {
 	}
 	
 	public User findCurrentUser(){
-		Collection<User> users =  mMutiboInterface.findByUsername(UserManager.getInstance().getUser().getUsername());
-		if(users!=null && users.iterator()!=null){
-			return users.iterator().next();
-		}else{
-			Log.e(TAG, "user not found. Did we log in??");
-			return null;
+		try{
+			Collection<User> users =  mMutiboInterface.
+					findByUsername(UserManager.getInstance().getUser().getUsername());
+			if(users!=null && users.iterator()!=null){
+				return users.iterator().next();
+			}else{
+				Log.e(TAG, "user not found. Did we log in??");
+				return null;
+			}
+		}catch(RetrofitError e){
+			errorKind = e.getKind();
+			e.printStackTrace();
+		}catch(Exception e){
+			e.printStackTrace();
+			Log.w(TAG, e.toString());
 		}
+
+		return null;
+	}
+	
+	public Boolean sendGCMRegistrationId(String username, String regId){
+		Boolean success = false;
+		try{
+			GCMUserRegistration gcmRegistration = new GCMUserRegistration(
+					username, regId);
+			mMutiboInterface.registerGCM(gcmRegistration);
+		}catch(RetrofitError e){
+			errorKind = e.getKind();
+			e.printStackTrace();
+		}catch(Exception e){
+			e.printStackTrace();
+			Log.w(TAG, e.toString());
+		}
+
+		return success;
+	}
+	
+	public RetrofitError.Kind getErrorKind(){
+		return errorKind;
 	}
 }

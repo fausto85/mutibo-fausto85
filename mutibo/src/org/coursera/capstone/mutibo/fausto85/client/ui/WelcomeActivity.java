@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class WelcomeActivity extends Activity {
 
@@ -126,6 +127,11 @@ public class WelcomeActivity extends Activity {
 				mTextCurrentScore.setText(getString(R.string.welcome_activity_current_score) + " " + Long.toString(mUserInfoFromServer.getPoints()));
 			} else {
 				mTextCurrentScore.setText(getString(R.string.welcome_activity_current_score) + "/n" + getString(R.string.welcome_activity_current_score_not_found));
+				Toast t = Toast.makeText(getApplicationContext(), 
+						getString(R.string.error_retrofit) + " " +
+						mServerConnectionManager.getErrorKind().toString(), 
+						Toast.LENGTH_LONG);
+				t.show();
 			}
 		}
 
